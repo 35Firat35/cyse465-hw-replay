@@ -17,3 +17,21 @@ sequenceDiagram
             Veh--x Att: reject (stale/replay)
         end
     end
+sequenceDiagram
+    participant RSU as RSU (Roadside Unit)
+    participant Attacker
+    participant Vehicle as Vehicle (Receiver)
+
+    RSU->>Vehicle: MSG(payload="GREEN_LIGHT", ts, nonce, mac=HMAC(key, payload|ts|nonce))
+
+    Note over RSU: Fresh timestamp + unique nonce<br>HMAC over all fields
+
+    Attacker--x Vehicle: replayed MSG(payload, old_ts, old_nonce, mac)
+
+    Vehicle->>Vehicle: verify HMAC
+
+    alt timestamp too old OR nonce already used
+        Vehicle-->>Attacker: reject (Replay detected)
+    else HMAC valid & fresh
+        Vehicle-->>RSU: accept (forward event)
+    end
