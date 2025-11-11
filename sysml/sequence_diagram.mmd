@@ -1,37 +1,23 @@
 sequenceDiagram
     participant RSU as RSU (Roadside Unit)
-    participant Att as Attacker
-    participant Veh as Vehicle (Receiver)
-
-    RSU->>Veh: MSG(payload="GREEN_LIGHT", ts, mac=HMAC)
-    Note over Att,RSU: Attacker sniffs the broadcast
-    Att->>Veh: (replayed) MSG(payload, old_ts, mac)
-    Veh->>Veh: verify MAC
-    alt MAC invalid
-        Veh--x Att: reject (MAC fail)
-    else MAC valid
-        Veh->>Veh: check freshness (|now-ts|<=window)
-        alt fresh
-            Veh->>Veh: accept and act
-        else
-            Veh--x Att: reject (stale/replay)
-        end
-    end
-sequenceDiagram
-    participant RSU as RSU (Roadside Unit)
     participant Attacker
     participant Vehicle as Vehicle (Receiver)
 
-    RSU->>Vehicle: MSG(payload="GREEN_LIGHT", ts, nonce, mac=HMAC(key, payload|ts|nonce))
+    RSU->>Vehicle: MSG(payload="GREEN_LIGHT", ts, mac=HMAC)
 
-    Note over RSU: Fresh timestamp + unique nonce<br>HMAC over all fields
+    Note over Attacker,RSU: Attacker sniffs the broadcast
 
-    Attacker--x Vehicle: replayed MSG(payload, old_ts, old_nonce, mac)
+    Attacker->>Vehicle: (replayed) MSG(payload, old_ts, mac)
 
-    Vehicle->>Vehicle: verify HMAC
+    Vehicle->>Vehicle: verify MAC
 
-    alt timestamp too old OR nonce already used
-        Vehicle-->>Attacker: reject (Replay detected)
-    else HMAC valid & fresh
-        Vehicle-->>RSU: accept (forward event)
+    alt MAC invalid
+        Vehicle--x Attacker: reject (MAC fail)
+    else MAC valid
+        Vehicle->>Vehicle: check freshness (|now - ts| <= window)
+        alt fresh
+            Vehicle->>Vehicle: accept and act
+        else
+            Vehicle--x Attacker: reject (stale/replay)
+        end
     end
