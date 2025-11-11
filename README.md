@@ -13,3 +13,5 @@ python replay_poc.py
 Aşağıdaki dosya, protokolün saldırı ve savunma akışını gösteren SysML sequence diagramıdır:
 
 - [Sequence Diagram (Mermaid)](sysml/sequence_diagram.mmd)
+- [Defense Sequence Diagram (Mermaid)](sysml/sequence_diagram_defense.mmd)
+
