@@ -9,3 +9,7 @@ python replay_poc.py
 - sysml/sequence_diagram.mmd — SysML sequence diagram (Mermaid)
 ## Report
 [Homework Report (Word file)](report/Yavuzbarut-Homework-CYSE%20465%20Fall%202025.docx)
+## SysML Diagram
+Aşağıdaki dosya, protokolün saldırı ve savunma akışını gösteren SysML sequence diagramıdır:
+
+- [Sequence Diagram (Mermaid)](sysml/sequence_diagram.mmd)
