@@ -1,0 +1,24 @@
+sequenceDiagram
+    participant RSU as RSU (Roadside Unit)
+    participant Att as Attacker
+    participant Veh as Vehicle (Receiver)
+
+    RSU->>Veh: MSG(payload="GREEN_LIGHT", ts, mac=HMAC)
+
+    Note over Att,RSU: Attacker sniffs the broadcast
+
+    Att->>Veh: (replayed) MSG(payload, old_ts, mac)
+
+    Veh->>Veh: verify MAC
+
+    alt MAC invalid
+        Veh--x Att: reject (MAC invalid)
+    else MAC valid
+        Veh->>Veh: check freshness (|now-ts| <= window)
+
+        alt fresh
+            Veh->>Veh: accept and act
+        else
+            Veh--x Att: reject (stale/replay)
+        end
+    end
